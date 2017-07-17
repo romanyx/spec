@@ -6,15 +6,15 @@ Go programs are constructed by linking together _packages_. A package in turn is
 
 Each source file consists of a package clause defining the package to which it belongs, followed by a possibly empty set of import declarations that declare packages whose contents it wishes to use, followed by a possibly empty set of declarations of functions, types, variables, and constants.
 
-<pre class="ebnf"><a id="SourceFile">SourceFile</a>       = [PackageClause](#PackageClause) ";" { [ImportDecl](#ImportDecl) ";" } { [TopLevelDecl](#TopLevelDecl) ";" } .
+<pre class="ebnf"><a id="SourceFile">SourceFile</a>       = <a href="#PackageClause" class="noline">PackageClause</a> ";" { <a href="#ImportDecl" class="noline">ImportDecl</a> ";" } { <a href="#TopLevelDecl" class="noline">TopLevelDecl</a> ";" } .
 </pre>
 
 ### Package clause ### {#Package_clause}
 
 A package clause begins each source file and defines the package to which the file belongs.
 
-<pre class="ebnf"><a id="PackageClause">PackageClause</a>  = "package" [PackageName](#PackageName) .
-<a id="PackageName">PackageName</a>    = [identifier](#identifier) .
+<pre class="ebnf"><a id="PackageClause">PackageClause</a>  = "package" <a href="#PackageName" class="noline">PackageName</a> .
+<a id="PackageName">PackageName</a>    = <a href="#identifier" class="noline">identifier</a> .
 </pre>
 
 The PackageName must not be the [blank identifier](#Blank_identifier).
