@@ -134,11 +134,11 @@ continue     for          import       return       var
 
 Простая форма записи представляет собой одиночным символом заключенный в одинарные кавычки. Так как исходный код в Go представляет собой набор кодовых точек Unicode закодированных в UTF-8, несколько байт закодированных в UTF-8 могут представлять один символ. Для примера знак `'a'` содержит единственный байт представляющий букву `a`, кодовую точку Unicode U+0061, шестеричное значение `0x61`, тогда как литерал `'ä'` представляет собой два байта (`0xc3` `0xa4`) представляющих `a` с тремой, кодовую точку Unicode U+00E4 и шестеричное значение `0xe4`
 
-Several backslash escapes allow arbitrary values to be encoded as ASCII text. There are four ways to represent the integer value as a numeric constant: `\x` followed by exactly two hexadecimal digits; `\u` followed by exactly four hexadecimal digits; `\U` followed by exactly eight hexadecimal digits, and a plain backslash `\` followed by exactly three octal digits. In each case the value of the literal is the value represented by the digits in the corresponding base.
+С помощью escape-последовательностей с обратной косой чертой можно записывать любые значения в кодировке ASCII. Есть четыре способа представления целочисленного значения в качестве числовой константы: последовательность `\x`, за которой следуют ровно две шестнадцатеричных цифры; `\u` и ровно четыре шестнадцатеричных цифры; `\U` и ровно восемь шестнадцатеричных цифр; просто обратная косая черта `\` и ровно три восьмеричных цифры. В каждом случае значение литерала — это значение, представленное указанными цифрами в соответствующей системе счисления.
 
-Although these representations all result in an integer, they have different valid ranges. Octal escapes must represent a value between 0 and 255 inclusive. Hexadecimal escapes satisfy this condition by construction. The escapes `\u` and `\U` represent Unicode code points so within them some values are illegal, in particular those above `0x10FFFF` and surrogate halves.
+Хотя все эти представления дают целочисленный результат, у них различен допустимый диапазон. Восьмеричные escape-последовательности должны представлять значение от 0 до 255 включительно. Шестнадцатеричные escape-последовательности удовлетворяют этому условию по построению. Escape-последовательности, начинающиеся с `\u` или `\U`, представляют собой кодовые-точки Юникод, поэтому некоторые значения в них недопустимы, в частности, значения выше `0x10FFFF` и замещающие половины.
 
-After a backslash, certain single-character escapes represent special values:
+Некоторые одиночные символы записанные после обратной косой черты образуют спецсимволы:
 
 ``` go
 \a   U+0007 alert or bell
@@ -153,7 +153,7 @@ After a backslash, certain single-character escapes represent special values:
 \"   U+0022 double quote  (valid escape only within string literals)
 ```
 
-All other sequences starting with a backslash are illegal inside rune literals.
+Любые другие последовательности, начинающиеся с обратной косой черты, запрещены в рунных литералах.
 
 <pre class="ebnf"><a id="rune_lit">rune_lit</a>         = "'" ( <a href="#unicode_value" class="noline">unicode_value</a> | <a href="#byte_value" class="noline">byte_value</a> ) "'" .
 <a id="unicode_value">unicode_value</a>    = <a href="#unicode_char" class="noline">unicode_char</a> | <a href="#little_u_value" class="noline">little_u_value</a> | <a href="#big_u_value" class="noline">big_u_value</a> | <a href="#escaped_char" class="noline">escaped_char</a> .
@@ -186,13 +186,13 @@ All other sequences starting with a backslash are illegal inside rune literals.
 '\U00110000' // illegal: invalid Unicode code point
 ```
 
-### String literals ### {#String_literals}
+### Строковые литерали ### {#String_literals}
 
-A string literal represents a [string constant](#Constants) obtained from concatenating a sequence of characters. There are two forms: raw string literals and interpreted string literals.
+Строковый литерал представляет собой [строковую константу](#Constants), образованную путем соединения последовательности символов. Существует две формы: неинтерпретированная и интерпретированная.
 
-Raw string literals are character sequences between back quotes, as in ``foo``. Within the quotes, any character may appear except back quote. The value of a raw string literal is the string composed of the uninterpreted (implicitly UTF-8-encoded) characters between the quotes; in particular, backslashes have no special meaning and the string may contain newlines. Carriage return characters ('\r') inside raw string literals are discarded from the raw string value.
+Неинтерпретируемые строковые литералы представляют собой последовательности символов, заключённые в обратные кавычки ``foo``. Внутри этих кавычек допустимы все символы, кроме обратных кавычек. Значение сырого строкового литерала — это строка, составленная из непроинтерпретированных (неявно закодированных в UTF-8) символов внутри кавычек; в частности, обратная косая черта не имеет специального значения, и литерал может быть расположен на нескольких строках. Символ возврата коретки ('\r') внутри неинтерпретируемых строковых литералов отбрасываются если литерал расположен в теле интерпретируемого литерала.
 
-Interpreted string literals are character sequences between double quotes, as in `"bar"`. Within the quotes, any character may appear except newline and unescaped double quote. The text between the quotes forms the value of the literal, with backslash escapes interpreted as they are in [rune literals](#Rune_literals) (except that `\'` is illegal and `\"` is legal), with the same restrictions. The three-digit octal (`\`_nnn_) and two-digit hexadecimal (`\x`_nn_) escapes represent individual _bytes_ of the resulting string; all other escapes represent the (possibly multi-byte) UTF-8 encoding of individual _characters_. Thus inside a string literal `\377` and `\xFF` represent a single byte of value `0xFF`=255, while `ÿ`, `\u00FF`, `\U000000FF` and `\xc3\xbf` represent the two bytes `0xc3` `0xbf` of the UTF-8 encoding of character U+00FF.
+Интерпретируемые строковые литералы представляют собой последовательности символов, заключённые в двойные кавычки `"bar"`. Внутри ковычек может быть расположен любой символ за исключением новой строки и неэкранированной двойной кавычки. Текст внутри ковычек образует значение литерала, и escape-последовательности интерпретируются подобно рунным литералам (за исключением того, что недопустима последовательность `\'`, но допустима `\"`). Escape-последовательности из трёх восьмеричных цифр (`\n`_nnn_) и из двух шестнадцатиричных цифр (`\x`_nn_) представляют индивидуальные _байты_ итоговой строки; все прочие escape-последовательности представляют коды (возможно, мультибайтовые) индивидуальных _символов_ в кодировке UTF-8. Таким образом, внутри строкового литерала последовательности `\377` и `\xFF` обозначают один байт со значением `0xFF`=255, в то время как `ÿ`, `\u00FF`, `\U000000FF` и `\xc3\xbf` представляют два байта `0xc3` `0xbf` кода символа U+00FF в кодировке UTF-8. 
 
 <pre class="ebnf"><a id="string_lit">string_lit</a>             = <a href="#raw_string_lit" class="noline">raw_string_lit</a> | <a href="#interpreted_string_lit" class="noline">interpreted_string_lit</a> .
 <a id="raw_string_lit">raw_string_lit</a>         = "`" { <a href="#unicode_char" class="noline">unicode_char</a> | <a href="#newline" class="noline">newline</a> } "`" .
@@ -200,27 +200,27 @@ Interpreted string literals are character sequences between double quotes, as in
 </pre>
 
 ``` go
-`abc`                // same as "abc"
+`abc`                // значение аналогично "abc"
 `\n
-\n`                  // same as "\\n\n\\n"
+\n`                  // значение аналогично "\\n\n\\n"
 "\n"
-"\""                 // same as `"`
+"\""                 // значение аналогично `"`
 "Hello, world!\n"
 "日本語"
 "\u65e5本\U00008a9e"
 "\xff\u00FF"
-"\uD800"             // illegal: surrogate half
-"\U00110000"         // illegal: invalid Unicode code point
+"\uD800"             // недопустимое значение: половина суррогатной пары
+"\U00110000"         // недопустимое значение: недействительная кодовая-точка Юникод
 ```
 
-These examples all represent the same string:
+Все эти примеры представляют одну и ту же строку:
 
 ``` go
-"日本語"                                 // UTF-8 input text
-`日本語`                                 // UTF-8 input text as a raw literal
-"\u65e5\u672c\u8a9e"                    // the explicit Unicode code points
-"\U000065e5\U0000672c\U00008a9e"        // the explicit Unicode code points
-"\xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e"  // the explicit UTF-8 bytes
+"日本語"                                 // текст в кодировке UTF-8 
+`日本語`                                 // неинтерпретируемый текст в кодировке UTF-8 
+"\u65e5\u672c\u8a9e"                    // кодовые-точки Юникод в явном виде
+"\U000065e5\U0000672c\U00008a9e"        // кодовые-точки Юникод в явном виде
+"\xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e"  // байты в кодировке UTF-8 в явном виде
 ```
 
-If the source code represents a character as two code points, such as a combining form involving an accent and a letter, the result will be an error if placed in a rune literal (it is not a single code point), and will appear as two code points if placed in a string literal.
+Если в исходнои коде представлен символ в виде двух кодовых-точек, такой как составной символ из буквы и диакритического символа, то результатом выполнения будет ошибка, если этот символ расположен внутри рунного литерала (т.к. это не единичная кодовая точка), и отображен в виде двух кодовых-точек, если будет расположен внутри строкового литерала.
