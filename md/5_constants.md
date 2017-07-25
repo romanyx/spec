@@ -1,14 +1,14 @@
-## Constants ## {#Constants}
+## Константы ## {#Constants}
 
-There are _boolean constants_, _rune constants_, _integer constants_, _floating-point constants_, _complex constants_, and _string constants_. Rune, integer, floating-point, and complex constants are collectively called _numeric constants_.
+В языке присутствуют: _булевы константы_, _рунные константы_, _целочисленные константы_, _константы чисел с плавающей точкой_, _константы комплексных чисел_ и _строковые константы_. Рунные, целочисленные и константы с плавающей точкой вместе называются _числовыми константами_.
 
-A constant value is represented by a [rune](#Rune_literals), [integer](#Integer_literals), [floating-point](#Floating-point_literals), [imaginary](#Imaginary_literals), or [string](#String_literals) literal, an identifier denoting a constant, a [constant expression](#Constant_expressions), a [conversion](#Conversions) with a result that is a constant, or the result value of some built-in functions such as `unsafe.Sizeof` applied to any value, `cap` or `len` applied to [some expressions](#Length_and_capacity), `real` and `imag` applied to a complex constant and `complex` applied to numeric constants. The boolean truth values are represented by the predeclared constants `true` and `false`. The predeclared identifier [iota](#Iota) denotes an integer constant.
+Значение константы представлено [рунным](#Rune_literals), [целочисленным](#Integer_literals), [мнимым](#Imaginary_literals), [строчным](#String_literals) литералом или литералом [числа с плавающей точкой](#Floating-point_literals), идентификатором обозначающим константу, [выражением-константой](#Constant_expressions), [преобразованием](#Conversions), результатом которого будет константа, или результирующим значением некоторых встроенных функций, таких как `unsafe.Sizeof` применимой к любому значению, `cap` или `len` применимым к [некоторым выражениям](#Length_and_capacity), `real` и `imag` применимым к константе комплексного числа, и `complex` применимой к числовым константам. Булевы значения истинности представлены предопределенными константами `true` и `false`. Предопределенный идентификатор [iota](#Iota) обозначаем целочисленную константу.
 
-In general, complex constants are a form of [constant expression](#Constant_expressions) and are discussed in that section.
+В общем константы комплексных чисел являются одной из форм [выражений-констант](#Constant_expressions) и будут детально рассмотрены в соответствующем разделе.
 
-Numeric constants represent exact values of arbitrary precision and do not overflow. Consequently, there are no constants denoting the IEEE-754 negative zero, infinity, and not-a-number values.
+Численные константы представляют собой точные значения произвольной разрядности, которые не переполняются. Следовательно, отсутствуют константы представляющие значения отрицательного нуля, бесконечности и _нечисла_ из стандарта [IEEE-754](https://ru.wikipedia.org/wiki/IEEE_754-2008).
 
-Constants may be [typed](#Types) or _untyped_. Literal constants, `true`, `false`, `iota`, and certain [constant expressions](#Constant_expressions) containing only untyped constant operands are untyped.
+Константы могут быть [типизированными](#Types) и _нетипизированными_. Литеральные константы, `true`, `false`, `iota` и некоторые [выражения-константы](#Constant_expressions), содержащие только нетипизированные операнды-константы, являются нетипизированными.
 
 A constant may be given a type explicitly by a [constant declaration](#Constant_declarations) or [conversion](#Conversions), or implicitly when used in a [variable declaration](#Variable_declarations) or an [assignment](#Assignments) or as an operand in an [expression](#Expressions). It is an error if the constant value cannot be represented as a value of the respective type. For instance, `3.0` can be given any integer or any floating-point type, while `2147483648.0` (equal to `1<<31`) can be given the types `float32`, `float64`, or `uint32` but not `int32` or `string`.
 
