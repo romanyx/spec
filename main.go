@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/pkg/errors"
 	"github.com/russross/blackfriday"
 )
 
@@ -85,13 +86,15 @@ func generateHTML(dir string) ([]byte, error) {
 
 	for _, path := range paths {
 		file, err := os.Open(path)
-		defer file.Close()
 
 		if err != nil {
 			return []byte{}, err
 		}
 
 		io.Copy(buf, file)
+		if err := file.Close(); err != nil {
+			return []byte{}, errors.Wrapf(err, "on file close %s", path)
+		}
 	}
 
 	content := template.HTML(blackfriday.MarkdownCommon(buf.Bytes()))
