@@ -16,17 +16,16 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/russross/blackfriday"
-	"github.com/socialradar/go-gzip-middleware"
 )
 
 var (
-	hostPort = flag.String("hostport", "localhost:8080", "server host and port")
-	logPath  = flag.String("log", "", "Log file path, default is output")
+	addr    = flag.String("hostport", "localhost:8080", "server address")
+	logPath = flag.String("log", "", "Log file path, default is output")
 )
 
 const (
-	mdDir      = "md"
-	reqTimeout = 9 * time.Second
+	mdDir       = "md"
+	readTimeout = 9 * time.Second
 )
 
 func main() {
@@ -41,29 +40,22 @@ func main() {
 		log.Fatal(err)
 	}
 
-	router := httprouter.New()
-	router.GET("/", middleware(indexHandler(html)))
+	s := NewServer(*addr, ReadTimeout(readTimeout), GET("/", indexHandler(html)), GzipOn)
 
-	server := http.Server{
-		Addr:        *hostPort,
-		Handler:     router,
-		ReadTimeout: reqTimeout,
-	}
-
-	log.Fatal(server.ListenAndServe())
+	log.Fatal(s.ListenAndServe())
 }
 
 func indexHandler(html []byte) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		w.Write(html)
-	}
-}
+		ctx := r.Context()
 
-func middleware(h httprouter.Handle) httprouter.Handle {
-	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8;")
-		gzh := gzip.Middleware(h, false)
-		gzh(w, r, p)
+		select {
+		case <-ctx.Done():
+			err := ctx.Err()
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		default:
+			w.Write(html)
+		}
 	}
 }
 
@@ -93,6 +85,7 @@ func generateHTML(dir string) ([]byte, error) {
 
 	for _, path := range paths {
 		file, err := os.Open(path)
+		defer file.Close()
 
 		if err != nil {
 			return []byte{}, err
