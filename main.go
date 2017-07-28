@@ -64,15 +64,16 @@ func sortFiles(files []os.FileInfo) []string {
 	s := make([]string, len(files), len(files))
 
 	for _, f := range files {
-		if !f.IsDir() {
-			index, err := strconv.Atoi(strings.Split(f.Name(), "_")[0])
-
-			if err != nil {
-				log.Println(err)
-			}
-
-			s[index-1] = fmt.Sprintf("%s/%s", mdDir, f.Name())
+		if f.IsDir() {
+			continue
 		}
+
+		index, err := strconv.Atoi(strings.Split(f.Name(), "_")[0])
+		if err != nil {
+			log.Println(err)
+		}
+
+		s[index-1] = fmt.Sprintf("%s/%s", mdDir, f.Name())
 	}
 
 	return s
@@ -115,15 +116,16 @@ func generateHTML(dir string) ([]byte, error) {
 }
 
 func setLogOut(path string) error {
-	if path != "" {
-		logOut, err := os.Open(path)
-
-		if err != nil {
-			return err
-		}
-
-		log.SetOutput(logOut)
+	if path == "" {
+		return nil
 	}
+
+	logOut, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+
+	log.SetOutput(logOut)
 
 	return nil
 }
