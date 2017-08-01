@@ -10,16 +10,16 @@
 
 Константы могут быть [типизированными](#Types) и _нетипизированными_. Литеральные константы, `true`, `false`, `iota` и некоторые [выражения-константы](#Constant_expressions), содержащие только нетипизированные операнды-константы, являются нетипизированными.
 
-A constant may be given a type explicitly by a [constant declaration](#Constant_declarations) or [conversion](#Conversions), or implicitly when used in a [variable declaration](#Variable_declarations) or an [assignment](#Assignments) or as an operand in an [expression](#Expressions). It is an error if the constant value cannot be represented as a value of the respective type. For instance, `3.0` can be given any integer or any floating-point type, while `2147483648.0` (equal to `1<<31`) can be given the types `float32`, `float64`, or `uint32` but not `int32` or `string`.
+Тип константы может быть определен явно путем [опреления константы](#Constant_declarations) или [преобразования](#Conversions) или неявно при использовании в [определении переменной](#Variable_declarations), [присваивании](#Variable_declarations) и в качестве операнда в [выражении](#Expressions). Произойдет ошибка, если значение константы не может быть представлено как значение соответствующего типа. Например, `3.0` может быть представлена типом любой разрядности целого числа или числа с плавающей точкой, в то время как `2147483648.0` (равнозначно `1<<31`) может быть представлена только типами `float32`, `float64`, или `uint32`, но не типами `int32` или `string`.
 
-An untyped constant has a _default type_ which is the type to which the constant is implicitly converted in contexts where a typed value is required, for instance, in a [short variable declaration](#Short_variable_declarations) such as `i := 0` where there is no explicit type. The default type of an untyped constant is `bool`, `rune`, `int`, `float64`, `complex128` or `string` respectively, depending on whether it is a boolean, rune, integer, floating-point, complex, or string constant.
+У нетипизированных констант определен _тип по умолчанию_ который является типом к которому константа явно преобразуется в зависимости от контекстов в которых необходима явная типизация, к примеру в [коротком определении переменной](#Short_variable_declarations) такой как `i := 0` нет явного указания типа. Типами по умолчанию нетипизированной константы могут быть `bool`, `rune`, `int`, `float64`, `complex128` или `string`, соответственно, в зависимости от того, является ли она логической, рунной, комплексной, строковой или константой с плавающей точкой.
 
-Implementation restriction: Although numeric constants have arbitrary precision in the language, a compiler may implement them using an internal representation with limited precision. That said, every implementation must:
+Ограничение реализации: хотя числовые константы имеют произвольную точность, компилятор может реализовать их с использованием внутренней реализации с ограниченной точностью. Тем не менее, каждая реализация должна:
 
-*   Represent integer constants with at least 256 bits.
-*   Represent floating-point constants, including the parts of a complex constant, with a mantissa of at least 256 bits and a signed binary exponent of at least 16 bits.
-*   Give an error if unable to represent an integer constant precisely.
-*   Give an error if unable to represent a floating-point or complex constant due to overflow.
-*   Round to the nearest representable constant if unable to represent a floating-point or complex constant due to limits on precision.
+* Представить целочисленную константу как минимум 256 битами.
+* Представить константу числа с плавающей точкой, включая части комплексных констант, метиссой как минимум в 256 бит и показателем как минимум 16 бит.
+* Выдать ошибку, если невозможно представить целочисленную константу точно.
+* Выдать ошибку, если невозможно представить комплексную или константу числа с плавающей точкой из-за переполнения.
+* Округлить до ближайшей точности если невозможно представить комплексную или константу числа с плавающей точкой из-за ограничений точности.
 
-These requirements apply both to literal constants and to the result of evaluating [constant expressions](#Constant_expressions).
+Эти требования применяются как к литеральным константам так и результатам вычислений [выражений-констант](#Constant_expressions).
